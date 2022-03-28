@@ -12,6 +12,7 @@ var context = renderer.getContext();
 
 // Create a stave at position 50, 200 of width 500 on the canvas.
 var stave = new VF.Stave(50, 200, 500);
+stave.setText('D-7', VF.Modifier.Position.ABOVE, { shift_y: -10 });
 
 // Add a clef and time signature.
 stave.addClef("treble").addTimeSignature("4/4");
@@ -30,8 +31,6 @@ for (let chordGenerator = 0; chordGenerator<4; chordGenerator++) {
     fMaj7Asc.push(baseNotes[(dominantIndex+start+chordGenerator*2)%7]); // %7 stays for the demo, but implement octave
 }
 
-console.log(fMaj7Asc);
-
 var notesAsc = fMaj7Asc.map(
     x => new VF.StaveNote({
         keys: [x+"/4"],
@@ -44,6 +43,14 @@ notesAsc.unshift(new VF.StaveNote({
     duration: "8r"
 })) //Adding eigth rest to make room for triplet figure
 
+let chord1 = new VF.ChordSymbol()
+  .addGlyphOrText('D')
+  .addGlyphOrText('-7', {
+    symbolModifier: VF.ChordSymbol.symbolModifiers.SUPERSCRIPT
+  })
+  .setFontSize(20);
+notesAsc[0].addModifier(chord1);
+
 phrase.push(notesAsc);
 
 
@@ -52,8 +59,6 @@ start = 6
 for (let scaleGenerator = 0; scaleGenerator<4; scaleGenerator++) {
     descG7.push(baseNotes[(dominantIndex+start-scaleGenerator)%7]);
 }
-
-console.log(descG7);
 
 var notesDesc = descG7.map(
     (x) => new VF.StaveNote({
@@ -70,8 +75,7 @@ var simpleTriplet = new Vex.Flow.Tuplet(notesAsc.slice(2,5));
 var voice = new Vex.Flow.Voice({num_beats:4, resolution:Vex.Flow.RESOLUTION})
 phrase.forEach(x => voice.addTickables(x))
 
-var formatter = new Vex.Flow.Formatter();
-formatter.format([voice], 450); //450 is 50 less than stave width so there is room for stuff
+var formatter = new VF.Formatter().joinVoices([voice]).format([voice], 440); //Leave 10px of space at the end of the bar
 
 voice.draw(context, stave);
 
@@ -80,6 +84,132 @@ beams.forEach(function(beam){
 });
 
 simpleTriplet.setContext(context).draw();
+
+
+// const {
+//   Accidental,
+//   ChordSymbol,
+//   Flow,
+//   Formatter,
+//   Renderer,
+//   Stave,
+//   StaveNote
+// } = Vex;
+
+// //Flow.setMusicFont('Bravura');
+
+// // Create an SVG renderer and attach it to the DIV element named "boo".
+// const div = document.getElementById('output');
+// const renderer = new Renderer(div, Renderer.Backends.SVG);
+
+// // Configure the rendering context.
+// renderer.resize(650, 500);
+// const context = renderer.getContext();
+// context.scale(1.5, 1.5);
+// context.setFont('Arial', 10, '').setBackgroundFillStyle('#eed');
+
+// // Create a stave of width 400 at position 10, 40 on the canvas.
+// let stave = new Stave(10, 40, 400);
+
+// // Add a clef and time signature.
+// stave.addClef('treble').addTimeSignature('4/4');
+
+// // Connect it to the rendering context and draw!
+// stave.setContext(context).draw();
+
+// let notes = [
+//   // A quarter-note C.
+//   new StaveNote({
+//     keys: ['f/4'],
+//     duration: 'h'
+//   }),
+
+//   // A quarter-note D.
+//   new StaveNote({
+//     keys: ['b/4'],
+//     duration: 'h'
+//   }).addModifier(new Accidental('b')),
+// ];
+
+// console.log(notes);
+
+// // let chord1 = new ChordSymbol()
+// //   .addGlyphOrText('F')
+// //   .addGlyphOrText('-7', {
+// //     symbolModifier: ChordSymbol.symbolModifiers.SUPERSCRIPT
+// //   })
+// //   .setFontSize(14);
+
+// let chord2 = new ChordSymbol()
+//   .addGlyphOrText('Bb7')
+//   .addGlyphOrText('#11', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUPERSCRIPT
+//   })
+//   .addGlyphOrText('b9', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUBSCRIPT
+//   })
+//   .setFontSize(14);
+
+// notes[0].addModifier(chord1);
+// notes[1].addModifier(chord2);
+
+// console.log(notes);
+// console.log(notesAsc);
+
+// Formatter.FormatAndDraw(context, stave, notes);
+
+// Flow.setMusicFont('Petaluma');
+
+// stave = new Stave(10, 140, 400);
+
+// // Add a clef and time signature.
+// stave.addClef('treble').addTimeSignature('4/4');
+
+// // Connect it to the rendering context and draw!
+// stave.setContext(context).draw();
+
+// notes = [
+//   // A quarter-note C.
+//   new StaveNote({
+//     keys: ['f/4'],
+//     duration: 'h'
+//   }),
+
+//   // A quarter-note D.
+//   new StaveNote({
+//     keys: ['b/4'],
+//     duration: 'h'
+//   }).addModifier(new Accidental('b')),
+// ];
+
+// chord1 = new ChordSymbol()
+//   .addGlyphOrText('F')
+//   .addGlyphOrText('7', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUPERSCRIPT
+//   })
+//   .addGlyphOrText('b5', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUBSCRIPT
+//   })
+//   .setFontSize(14);
+
+// console.log(chord1)
+
+// chord2 = new ChordSymbol()
+//   .addGlyphOrText('Bb7')
+//   .addGlyphOrText('#11', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUPERSCRIPT
+//   })
+//   .addGlyphOrText('b9', {
+//     symbolModifier: ChordSymbol.symbolModifiers.SUBSCRIPT
+//   })
+//   .setFontSize(14);
+
+// notes[0].addModifier(chord1);
+// notes[1].addModifier(chord2);
+
+// Formatter.FormatAndDraw(context, stave, notes);
+
+
 
 // let chord1 = new VF.ChordSymbol()
 //   .addGlyphOrText('F')
