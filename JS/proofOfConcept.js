@@ -22,9 +22,23 @@ stave.setContext(context).draw();
 
 var baseNotes = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
 
+var numFlatsOrSharps = 3;
+
+
+var flatSharpSymbol = 'b';
+//Note that the following two variables are determined by flatSharpSymbol
+var keyGeneratorIncrement = 3; //this will add flats, as flats are created around the circle of fourths, which is 3 tones above the base note. To add sharps, it should equal 4
+var keyGenStart = 1; //since flats start with Bb. If sharps, keyGenStart=5, sharps start at F#
+
+for (let i=0; i<numFlatsOrSharps; i++) {
+    baseNotes[(keyGenStart+i*(keyGeneratorIncrement))%7] += flatSharpSymbol; //The 5 is to start at B, if the loop executes once, there will be one flat, Bb
+}
+
+console.log(baseNotes);
+
 var phrase = []
 var keyIndex = 2;
-var dominantIndex = (keyIndex + 4) % 7; //+4 because the V is the I + 4
+var dominantIndex = (keyIndex + 4) % 7; //+4 because the V is the I + 4. This idea is present for all intervals in the program
 var fMaj7Asc = []
 let start = 6 //randomize to be dominant chord tones, note off by one actually makes this the seventh
 for (let chordGenerator = 0; chordGenerator<4; chordGenerator++) {
@@ -54,8 +68,8 @@ notesAsc[0].addModifier(chord1);
 phrase.push(notesAsc);
 
 
-var descG7 = []
-start = 6
+var descG7 = [];
+start = 6;
 for (let scaleGenerator = 0; scaleGenerator<4; scaleGenerator++) {
     descG7.push(baseNotes[(dominantIndex+start-scaleGenerator)%7]);
 }
@@ -67,6 +81,8 @@ var notesDesc = descG7.map(
     })
 );
 phrase.push(notesDesc);
+
+for (const note of phrase) console.log(note);
 
 var beams = [new VF.Beam(notesAsc.slice(2,5)), new VF.Beam(notesDesc.slice(0,4))];
 
