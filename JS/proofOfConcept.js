@@ -20,10 +20,40 @@ stave.addClef("treble").addTimeSignature("4/4");
 // Connect it to the rendering context and draw!
 stave.setContext(context).draw();
 
-var baseNotes = ['a', 'b', 'c', 'd', 'e', 'f', 'g'];
+var baseNotes = ['a', 'b', 'c', 'd', 'e', 'f', 'g']; //I wil want to create a note class that gives letter, accidental, and octave
 
-var numFlatsOrSharps = 3;
+function noteToSemitone(note) { //Note that this will have to be adjusted for octave functionality
+    let semitoneVal;
+    switch(note[0]) {
+        case 'a':
+            semitoneVal = 0;
+            break;
+        case 'b':
+            semitoneVal = 2;
+            break;
+        case 'c':
+            semitoneVal = 3;
+            break;
+        case 'd':
+            semitoneVal = 5;
+            break;
+        case 'e':
+            semitoneVal = 7;
+            break;
+        case 'f':
+            semitoneVal = 8;
+            break;
+        case 'g':
+            semitoneVal = 10;
+            break;
+    }
+    
+    if (note.length>1) semitoneVal += (note[1]==='b') ? -1 : 1
+    
+    return (12+semitoneVal)%12 //dirty for proof of concept
+}
 
+var numFlatsOrSharps = 3; //maybe do this by putting in the key signature instead, also put in function for god's sake
 
 var flatSharpSymbol = 'b';
 //Note that the following two variables are determined by flatSharpSymbol
@@ -37,7 +67,7 @@ for (let i=0; i<numFlatsOrSharps; i++) {
 console.log(baseNotes);
 
 var phrase = []
-var keyIndex = 2;
+var keyIndex = 2; //determine algorithmically
 var dominantIndex = (keyIndex + 4) % 7; //+4 because the V is the I + 4. This idea is present for all intervals in the program
 var fMaj7Asc = []
 let start = 6 //randomize to be dominant chord tones, note off by one actually makes this the seventh
