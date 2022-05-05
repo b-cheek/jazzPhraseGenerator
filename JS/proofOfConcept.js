@@ -5,14 +5,14 @@ var div = document.getElementById("output");
 var renderer = new VF.Renderer(div, VF.Renderer.Backends.SVG);
 
 // Size our SVG:
-renderer.resize(600, 600);
+renderer.resize(600, 400);
 
 // And get a drawing context:
 var context = renderer.getContext();
 
 // Create a stave at position 50, 200 of width 500 on the canvas.
-var stave = new VF.Stave(50, 200, 500);
-stave.setText('D-7', VF.Modifier.Position.ABOVE, { shift_y: -10 });
+var stave = new VF.Stave(50, 150, 500);
+// stave.setText('D-7', VF.Modifier.Position.ABOVE, { shift_y: -10 }); used to set chord symbol in middle, I'm using above first note instead
 
 // Add a clef and time signature.
 stave.addClef("treble").addTimeSignature("4/4");
@@ -79,8 +79,14 @@ var notesAsc = fMaj7Asc.map(
     x => new VF.StaveNote({
         keys: [x+"/4"],
         duration: "8"
-    })
+    }).setStyle({fillStyle: "red", strokeStyle: "red"})
 );
+
+let chord = "D-7";
+let startDegree = "3rd";
+let endDegree = "9th";
+const ArpeggiationConcept = `<div class="conceptContainer" id="arpeggContainer"><p>Arpeggiation of the ${chord} chord starting on the ${startDegree}, and ending on the ${endDegree}.</p><div>`
+document.getElementById("conceptsGrid").innerHTML += ArpeggiationConcept;
 
 notesAsc.unshift(new VF.StaveNote({
     keys: ['b/4'],
@@ -108,15 +114,22 @@ var notesDesc = descG7.map(
     (x) => new VF.StaveNote({
         keys: [x+"/4"],
         duration: "8"
-    })
+    }).setStyle({fillStyle: "blue", strokeStyle: "blue"}) //note color setting
 );
 phrase.push(notesDesc);
 
+let scale = "G Bebop";
+let scaleDirection = "Descending"
+startDegree = "7th";
+endDegree = "4th";
+const ScaleConcept = `<div class="conceptContainer" id="scaleContainer"><p>${scaleDirection} ${scale} going from the ${startDegree} to the ${endDegree}.</p><div>`
+document.getElementById("conceptsGrid").innerHTML += ScaleConcept;
+
 for (const note of phrase) console.log(note);
 
-var beams = [new VF.Beam(notesAsc.slice(2,5)), new VF.Beam(notesDesc.slice(0,4))];
+var beams = [new VF.Beam(notesAsc.slice(2,5)).setStyle({fillStyle: "red", strokeStyle: "red"}), new VF.Beam(notesDesc.slice(0,4)).setStyle({fillStyle: "blue", strokeStyle: "blue"})];
 
-var simpleTriplet = new Vex.Flow.Tuplet(notesAsc.slice(2,5));
+var simpleTriplet = new Vex.Flow.Tuplet(notesAsc.slice(2,5)).setStyle({fillStyle: "red", strokeStyle: "red"});
 
 var voice = new Vex.Flow.Voice({num_beats:4, resolution:Vex.Flow.RESOLUTION})
 phrase.forEach(x => voice.addTickables(x))

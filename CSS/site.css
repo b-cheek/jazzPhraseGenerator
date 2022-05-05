@@ -2,3 +2,25 @@
     margin-left: auto;
     margin-right: auto;
 }
+
+#conceptsGrid {
+    width: 94%;
+    height: 25%;
+    margin: 3%;
+    display: grid;
+    grid-auto-flow: column;
+}
+
+.conceptContainer {
+    margin: 8px;
+    border: solid 3px;
+    padding: 5px;
+}
+
+#arpeggContainer {
+    border-color: red;
+}
+
+#scaleContainer {
+    border-color: blue;
+}
